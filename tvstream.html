@@ -40,7 +40,7 @@
 
     <style>
         /* CSS Reset & Scrollbar */
-        ::-webkit-scrollbar { width: 0px; background: transparent; } /* Hilangkan scrollbar */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
         body { 
             background-color: #020617; 
             color: #f8fafc; 
@@ -50,18 +50,14 @@
             overscroll-behavior-y: none;
         }
 
-        /* Glassmorphism */
         .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
 
-        /* Loader */
         .loader { border: 3px solid rgba(255,255,255,0.1); border-left-color: #3b82f6; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* PLAYER OVERLAY FIXES - CRITICAL */
         #playerOverlay {
             background-color: #000;
             z-index: 9999;
-            /* Fix untuk Mobile Browser Address Bar */
             height: 100dvh; 
             height: -webkit-fill-available; 
             width: 100vw;
@@ -70,7 +66,6 @@
             left: 0;
         }
         
-        /* Force iframe to fill container completely */
         #tvFrame {
             position: absolute;
             top: 0;
@@ -81,11 +76,9 @@
             overflow: hidden;
         }
 
-        /* Channel Card Hover */
         .channel-card { transition: all 0.2s ease; }
         .channel-card:active { transform: scale(0.98); }
         
-        /* Helper untuk menyembunyikan scroll saat main */
         body.no-scroll {
             overflow: hidden;
             position: fixed;
@@ -109,13 +102,11 @@
 
     <!-- Main Content -->
     <main class="flex-grow pt-20 pb-24 px-4 max-w-5xl mx-auto w-full min-h-screen">
-        <!-- Loader -->
         <div id="globalLoader" class="fixed inset-0 z-[60] bg-darker flex flex-col items-center justify-center">
             <div class="loader mb-4"></div>
             <p class="text-slate-500 text-xs">Memuat Channel...</p>
         </div>
         
-        <!-- Content Container -->
         <div id="appContent" class="opacity-0 transition-opacity duration-500"></div>
     </main>
 
@@ -124,27 +115,22 @@
         <i class="fas fa-info-circle text-blue-400"></i> <span id="toastMsg">Notifikasi</span>
     </div>
 
-    <!-- Player Overlay (Cinema Mode) -->
+    <!-- Player Overlay -->
     <div id="playerOverlay" class="hidden flex-col w-full h-full">
-        
-        <!-- Player Controls Header (Floating) -->
         <div class="absolute top-0 left-0 w-full z-20 bg-gradient-to-b from-black/90 via-black/50 to-transparent pt-4 pb-12 px-4 transition-opacity duration-300" id="playerControls">
             <div class="flex items-center justify-between">
-                <!-- Tombol "Mode Penuh" (Visual Only) -->
                 <button onclick="app.maximizeView()" class="bg-white/10 hover:bg-white/20 text-white rounded-full px-3 py-1.5 text-xs font-medium flex items-center gap-2 backdrop-blur transition-colors border border-white/10">
                     <i class="fas fa-expand"></i> <span class="hidden sm:inline">Full Screen</span>
                 </button>
                 
                 <h2 class="text-white font-bold text-sm tracking-wide drop-shadow-md" id="playerChannelName">CHANNEL</h2>
 
-                <!-- Tombol Buka Tab Baru -->
                 <a id="externalLinkBtn" href="#" target="_blank" class="text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center backdrop-blur transition-colors">
                     <i class="fas fa-external-link-alt text-xs"></i>
                 </a>
             </div>
         </div>
         
-        <!-- Tap Area untuk Show/Hide Controls -->
         <div id="videoTapArea" class="flex-grow relative w-full h-full bg-black cursor-pointer" onclick="app.toggleControls()">
             <iframe 
                 id="tvFrame" 
@@ -163,7 +149,6 @@
             </div>
         </div>
 
-        <!-- Bottom Sheet Info -->
         <div class="bg-slate-900/95 backdrop-blur border-t border-slate-800 p-4 pb-6 z-20 rounded-t-2xl">
             <div class="w-10 h-1 bg-slate-700 rounded-full mx-auto mb-3"></div>
             <div class="flex justify-between items-start">
@@ -175,13 +160,15 @@
                     <i class="fas fa-times mr-1"></i> Tutup
                 </button>
             </div>
-            <p class="text-[10px] text-center text-slate-600 mt-4 italic">Jika video hitam, klik tombol pojok kanan atas atau cek koneksi.</p>
+            <p class="text-[10px] text-center text-slate-600 mt-4 italic">Jika video hitam, klik tombol pojok kanan atas atau coba channel lain. Proxy CORS aktif untuk bypass blok.</p>
         </div>
     </div>
 
     <!-- JavaScript Logic -->
     <script>
         const app = {
+            proxyPrefix: 'https://corsproxy.io/?',  // Alternatif: 'https://api.allorigins.win/raw?url=' atau 'https://proxy.cors.sh/'
+
             channels: [
                 { id: 'rcti', name: 'RCTI', group: 'MNC', bg: 'bg-blue-600', icon: 'fas fa-tv', url: 'https://sindikasi.inews.id/embed/video/YWdlbnQ9ZGVza3RvcCZ1cmw9aHR0cHMlM0ElMkYlMkZlbWJlZC5yY3RpcGx1cy5jb20lMkZsaXZlJTJGcmN0aSUyRmluZXdzaWQmaGVpZ2h0PTEwMCUyNSZ3aWR0aD0xMDAlMjU=', desc: 'Sinetron & Hiburan' },
                 { id: 'gtv', name: 'GTV', group: 'MNC', bg: 'bg-green-600', icon: 'fas fa-bolt', url: 'https://sindikasi.inews.id/embed/video/YWdlbnQ9ZGVza3RvcCZ1cmw9aHR0cHMlM0ElMkYlMkZlbWJlZC5yY3RpcGx1cy5jb20lMkZsaXZlJTJGZ3R2JTJGaW5ld3NpZCZoZWlnaHQ9MTAwJTI1JndpZHRoPTEwMCUyNQ==', desc: 'Global Televisi' },
@@ -189,30 +176,19 @@
                 { id: 'mnctv', name: 'MNCTV', group: 'MNC', bg: 'bg-yellow-500', icon: 'fas fa-star', url: 'https://sindikasi.inews.id/embed/video/YWdlbnQ9ZGVza3RvcCZ1cmw9aHR0cHMlM0ElMkYlMkZlbWJlZC5yY3RpcGx1cy5jb20lMkZsaXZlJTJGbW5jdHYlMkZpbmV3c2lkJmhlaWdodD0xMDAlMjUmd2lkdGg9MTAwJTI1', desc: 'Keluarga & Olahraga' },
                 { id: 'idx', name: 'IDX Channel', group: 'Biz', bg: 'bg-slate-700', icon: 'fas fa-chart-line', url: 'https://sindikasi.inews.id/embed/video/YWdlbnQ9ZGVza3RvcCZ1cmw9aHR0cHMlM0ElMkYlMkZjZG4tbGl2ZXR2LXN0dWRpby5tZXR1YmUuaWQlMkZpZHhjaGFubmVsLm0zdTgmaGVpZ2h0PTEwMCUyNSZ3aWR0aD0xMDAlMjU=', desc: 'Pasar Saham' },
                 { id: 'mncnews', name: 'MNC News', group: 'News', bg: 'bg-red-700', icon: 'fas fa-globe-asia', url: 'https://sindikasi.inews.id/embed/video/YWdlbnQ9ZGVza3RvcCZ1cmw9aHR0cHMlM0ElMkYlMkZjZG4tbGl2ZXR2LXN0dWRpby5tZXR1YmUuaWQlMkZtbmNuZXdzLm0zdTgmaGVpZ2h0PTEwMCUyNSZ3aWR0aD0xMDAlMjU=', desc: 'News 24 Jam' },
-                { id: 'trans7', name: 'TRANS7', group: 'Trans', bg: 'bg-red-600', icon: 'fas fa-flag', url: 'https://video.detik.com/embed/211001001', desc: 'Olahraga & Hiburan' },  // Update dari detik.com (cek jika berubah)
+                { id: 'trans7', name: 'TRANS7', group: 'Trans', bg: 'bg-red-600', icon: 'fas fa-flag', url: 'https://video.detik.com/embed/211001001', desc: 'Olahraga & Hiburan' },
                 { id: 'sctv', name: 'SCTV', group: 'Emtek', bg: 'bg-purple-600', icon: 'fas fa-film', url: 'https://www.vidio.com/embed/204?autoplay=true&player_only=true&livestream=true', desc: 'Sinetron & Berita' },
                 { id: 'indosiar', name: 'Indosiar', group: 'Emtek', bg: 'bg-indigo-600', icon: 'fas fa-music', url: 'https://www.vidio.com/embed/205?autoplay=true&player_only=true&livestream=true', desc: 'Dangdut & Sinetron' },
                 { id: 'transtv', name: 'Trans TV', group: 'Trans', bg: 'bg-pink-600', icon: 'fas fa-heart', url: 'https://www.vidio.com/embed/203?autoplay=true&player_only=true&livestream=true', desc: 'Hiburan Keluarga' },
-                { id: 'antv', name: 'ANTV', group: 'Viva', bg: 'bg-teal-600', icon: 'fas fa-drama', url: 'https://www.vidio.com/embed/206?autoplay=true&player_only=true&livestream=true', desc: 'Drama India & Lokal' },  // Dari vidio.com
+                { id: 'antv', name: 'ANTV', group: 'Viva', bg: 'bg-teal-600', icon: 'fas fa-drama', url: 'https://www.vidio.com/embed/206?autoplay=true&player_only=true&livestream=true', desc: 'Drama India & Lokal' },
                 { id: 'tvone', name: 'TVOne', group: 'Viva', bg: 'bg-cyan-600', icon: 'fas fa-microphone', url: 'https://www.vidio.com/embed/207?autoplay=true&player_only=true&livestream=true', desc: 'Berita & Diskusi' },
-                { id: 'kompastv', name: 'Kompas TV', group: 'Kompas', bg: 'bg-lime-600', icon: 'fas fa-compass', url: 'https://www.kompas.tv/embed/live', desc: 'Berita & Talkshow' },  // Embed resmi jika ada
-                { id: 'metrotv', name: 'Metro TV', group: 'Media', bg: 'bg-amber-600', icon: 'fas fa-city', url: 'https://www.metrotvnews.com/embed/live', desc: 'Berita Metro' },
-                { id: 'beritasatu', name: 'BeritaSatu', group: 'News', bg: 'bg-rose-600', icon: 'fas fa-newspaper', url: 'https://www.beritasatu.com/embed/live', desc: 'Berita Nasional' },
-                { id: 'cnnindonesia', name: 'CNN Indonesia', group: 'CNN', bg: 'bg-red-500', icon: 'fas fa-globe', url: 'https://live.cnnindonesia.com/embed', desc: 'Berita Internasional' },
-                { id: 'cnbcindonesia', name: 'CNBC Indonesia', group: 'CNBC', bg: 'bg-green-500', icon: 'fas fa-dollar-sign', url: 'https://www.cnbcindonesia.com/embed/live', desc: 'Ekonomi & Bisnis' },
-                { id: 'net', name: 'NET TV', group: 'NET', bg: 'bg-violet-600', icon: 'fas fa-network-wired', url: 'https://www.netmedia.co.id/embed/live', desc: 'Hiburan Modern' },
-                { id: 'rtv', name: 'RTV', group: 'Rajawali', bg: 'bg-emerald-600', icon: 'fas fa-child', url: 'https://www.rtv.co.id/embed/live', desc: 'Anak & Keluarga' },
-                { id: 'tvri', name: 'TVRI', group: 'Nasional', bg: 'bg-gray-600', icon: 'fas fa-flag-checkered', url: 'https://www.tvri.go.id/live/embed', desc: 'TV Nasional' }
-                // Tambah lebih banyak kalau perlu, cek GitHub IPTV untuk update URL
+                // Tambah channel lain kalau perlu, atau update URL kalau expired
             ],
 
-            proxyUrl: 'https://your-worker-url.workers.dev/?url=',  // GANTI DENGAN URL WORKER-MU
-
             init() {
-                // Jam
                 setInterval(() => {
                     const now = new Date();
-                    document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+                    document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
                 }, 1000);
                 setTimeout(() => this.renderHome(), 500);
             },
@@ -225,7 +201,7 @@
                     <div class="space-y-6 animate-fade-in">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                            <h2 class="text-white font-bold text-lg">Siaran Langsung</h2>
+                            <h2 class="text-white font-bold text-lg">Siaran Langsung Indonesia</h2>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                             ${this.channels.map(c => `
@@ -233,7 +209,6 @@
                                     <div class="w-12 h-12 rounded-full ${c.bg} flex items-center justify-center text-white text-lg shadow-lg z-10 group-hover:scale-110 transition-transform"><i class="${c.icon}"></i></div>
                                     <h3 class="text-white font-bold text-sm z-10">${c.name}</h3>
                                     <p class="text-slate-500 text-[10px] z-10">${c.group}</p>
-                                    <!-- Play Icon Overlay -->
                                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-[2px]">
                                         <div class="w-10 h-10 bg-white text-black rounded-full flex items-center justify-center"><i class="fas fa-play ml-1"></i></div>
                                     </div>
@@ -249,68 +224,56 @@
                 const ch = this.channels.find(c => c.id === id);
                 if (!ch) return;
 
-                const overlay = document.getElementById('playerOverlay');
-                const frame = document.getElementById('tvFrame');
-                const loading = document.getElementById('playerLoading');
-                
-                // Set Data
                 document.getElementById('playerChannelName').innerText = ch.name;
                 document.getElementById('playerTitleDetail').innerText = ch.name;
                 document.getElementById('playerDesc').innerText = ch.desc;
                 document.getElementById('externalLinkBtn').href = ch.url;
 
-                // Show Overlay
+                const overlay = document.getElementById('playerOverlay');
+                const frame = document.getElementById('tvFrame');
+                const loading = document.getElementById('playerLoading');
+
                 overlay.classList.remove('hidden');
                 overlay.classList.add('flex');
-                
-                // Kunci scroll body
                 document.body.classList.add('no-scroll');
 
                 loading.classList.remove('hidden');
 
-                // Gunakan proxy untuk bypass detection
-                frame.src = this.proxyUrl + encodeURIComponent(ch.url);
+                // Pakai proxy CORS publik
+                frame.src = this.proxyPrefix + encodeURIComponent(ch.url);
 
-                // Simulasi loading
+                this.showToast("Menggunakan proxy CORS untuk bypass blok...");
+
                 setTimeout(() => {
                     loading.classList.add('hidden');
-                    // Sembunyikan kontrol otomatis setelah 3 detik
                     document.getElementById('playerControls').style.opacity = '0';
-                }, 2000);
+                }, 3000);
             },
 
             closePlayer() {
                 const overlay = document.getElementById('playerOverlay');
                 const frame = document.getElementById('tvFrame');
-                
                 overlay.classList.add('hidden');
                 overlay.classList.remove('flex');
-                frame.src = ''; // Stop stream
-                
-                // Kembalikan scroll body
+                frame.src = '';
                 document.body.classList.remove('no-scroll');
-                
-                // Reset kontrol opacity
                 document.getElementById('playerControls').style.opacity = '1';
             },
 
             toggleControls() {
                 const ctrls = document.getElementById('playerControls');
-                if (ctrls.style.opacity === '0') {
-                    ctrls.style.opacity = '1';
-                    setTimeout(() => {
-                        ctrls.style.opacity = '0';
-                    }, 3000);
-                } else {
-                    ctrls.style.opacity = '0';
+                ctrls.style.opacity = ctrls.style.opacity === '0' ? '1' : '0';
+                if (ctrls.style.opacity === '1') {
+                    setTimeout(() => { ctrls.style.opacity = '0'; }, 4000);
                 }
             },
 
             maximizeView() {
-                document.getElementById('playerOverlay').classList.remove('hidden');
-                document.getElementById('playerOverlay').classList.add('flex');
-                document.getElementById('playerControls').style.opacity = '0';
-                this.showToast("Mode Layar Penuh Aktif. Putar HP ke samping untuk optimal.");
+                const elem = document.getElementById('playerOverlay');
+                if (elem.requestFullscreen) elem.requestFullscreen();
+                else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+                else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+                this.showToast("Mode Layar Penuh Aktif");
             },
 
             goHome() {
@@ -321,7 +284,7 @@
                 const t = document.getElementById('toast');
                 document.getElementById('toastMsg').innerText = msg;
                 t.classList.remove('translate-y-20', 'opacity-0');
-                setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 3000);
+                setTimeout(() => t.classList.add('translate-y-20', 'opacity-0'), 4000);
             }
         };
 
